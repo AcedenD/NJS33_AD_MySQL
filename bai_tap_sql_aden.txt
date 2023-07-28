@@ -1,0 +1,184 @@
+﻿CREATE DATABASE bai_tap_sql_aden;
+USE bai_tap_sql_aden;
+# create table
+CREATE TABLE food_type (
+        type_id INT PRIMARY KEY AUTO_INCREMENT,
+        type_name VARCHAR(200)
+);
+CREATE TABLE food (
+        food_id INT PRIMARY KEY AUTO_INCREMENT,
+        food_name VARCHAR(200),
+        image VARCHAR(200),
+        price FLOAT,
+        description VARCHAR(200),
+        
+        type_id INT,
+        
+        FOREIGN KEY (type_id) REFERENCES food_type(type_id)
+);
+CREATE TABLE nguoi_dung (
+        user_id INT PRIMARY KEY AUTO_INCREMENT,
+        full_name VARCHAR(200),
+        user_email VARCHAR(200),
+        user_password VARCHAR(200)
+);
+CREATE TABLE restaurant (
+        res_id INT PRIMARY KEY AUTO_INCREMENT,
+        res_name VARCHAR(200),
+        image VARCHAR(200),
+        description VARCHAR(200)
+);
+CREATE TABLE orders (
+        order_id INT PRIMARY KEY AUTO_INCREMENT,
+        amount INT,
+        order_code VARCHAR(200),
+        arr_sub_id VARCHAR(200),
+        
+        user_id INT,
+        food_id INT,
+        
+        FOREIGN KEY (user_id) REFERENCES nguoi_dung(user_id),
+        FOREIGN KEY (food_id) REFERENCES food(food_id)
+);
+CREATE TABLE sub_food (
+        sub_id INT PRIMARY KEY AUTO_INCREMENT,
+        sub_name VARCHAR(200),
+        sub_price FLOAT,
+        
+        food_id INT,
+        
+        FOREIGN KEY (food_id) REFERENCES food(food_id)
+);
+CREATE TABLE like_res (
+        date_like DATETIME,
+        
+        user_id INT,
+        res_id INT,
+        
+        FOREIGN KEY (user_id) REFERENCES nguoi_dung(user_id),
+        FOREIGN KEY (res_id) REFERENCES restaurant(res_id)
+)
+CREATE TABLE rate_res (
+        amount INT,
+        date_rate DATETIME,
+        
+        user_id INT,
+        res_id INT,
+        
+        FOREIGN KEY (user_id) REFERENCES nguoi_dung(user_id),
+        FOREIGN KEY (res_id) REFERENCES restaurant(res_id)
+)
+# insert data into table
+INSERT INTO nguoi_dung (full_name, user_email, user_password)
+VALUES
+    ('John Doe', 'john@example.com', 'password123'),
+    ('Jane Smith', 'jane@example.com', 'securepass'),
+    ('Michael Johnson', 'michael@example.com', 'mysecret123'),
+    ('Emily Brown', 'emily@example.com', 'strongpassword'),
+    ('David Lee', 'david@example.com', 'p@$$w0rd');
+INSERT INTO restaurant (res_name, image, description)
+VALUES
+    ('Restaurant A', 'path/to/image1.jpg', 'A cozy restaurant offering delicious food.'),
+    ('Restaurant B', 'path/to/image2.jpg', 'A fine dining restaurant with a gourmet menu.'),
+    ('Restaurant C', 'path/to/image3.jpg', 'A family-friendly restaurant serving international cuisine.');
+INSERT INTO food_type (type_id, type_name) VALUES
+(1, 'Món chay'),
+(2, 'Món tráng miệng'),
+(3, 'Món hải sản'),
+(4, 'Món thịt'),
+(5, 'Món nước');
+INSERT INTO food (food_id, food_name, image, price, description, type_id) VALUES
+(1, 'Phở chay', 'pho-chay.jpg', 5.99, 'Món phở chay Việt Nam', 1),
+(2, 'Kem dâu', 'kem-dau.jpg', 3.49, 'Kem tráng miệng vị dâu', 1),
+(3, 'Tôm hấp', 'tom-hap.jpg', 12.99, 'Tôm hấp ngon miệng', 2),
+(4, 'Bò nướng', 'bo-nuong.jpg', 15.99, 'Món thịt bò nướng', 3),
+(5, 'Nước chanh', 'nuoc-chanh.jpg', 1.99, 'Nước chanh tươi', 3);
+INSERT INTO sub_food (sub_name, sub_price, food_id)
+VALUES
+    ('Sub A', 8.99, 1),
+    ('Sub B', 9.50, 1),
+    ('Sub C', 7.95, 2),
+    ('Sub D', 10.25, 2),
+    ('Sub E', 6.75, 3);
+INSERT INTO orders (amount, order_code, arr_sub_id, user_id, food_id)
+VALUES
+    (2, 'ORDER123', '1,3', 1, 2),
+    (1, 'ORDER456', '2', 2, 4),
+    (3, 'ORDER789', '4,5', 3, 1),
+    (1, 'ORDER987', '3', 1, 5),
+    (2, 'ORDER654', '1,2', 4, 3);
+INSERT INTO like_res (date_like, user_id, res_id) VALUES
+('2023-07-27 12:30:00', 1, 1),
+('2023-07-28 14:15:00', 2, 1),
+('2023-07-29 18:00:00', 3, 2),
+('2023-07-30 20:45:00', 4, 2),
+('2023-08-01 11:00:00', 5, 3),
+('2023-08-02 09:30:00', 1, 3),
+('2023-08-03 17:45:00', 2, 1),
+('2023-08-04 16:20:00', 3, 1),
+('2023-08-05 13:10:00', 4, 2),
+('2023-08-06 15:50:00', 5, 2),
+('2023-08-07 10:30:00', 1, 3),
+('2023-08-08 12:15:00', 2, 3),
+('2023-08-09 14:00:00', 3, 1),
+('2023-08-10 16:40:00', 4, 1),
+('2023-08-11 19:00:00', 5, 2),
+('2023-08-12 21:25:00', 1, 2),
+('2023-08-13 08:00:00', 2, 3),
+('2023-08-14 10:20:00', 3, 3),
+('2023-08-15 14:30:00', 4, 1),
+('2023-08-16 16:50:00', 5, 1);
+INSERT INTO rate_res (amount, date_rate, user_id, res_id) VALUES
+(4, '2023-07-27 12:30:00', 1, 1),
+(5, '2023-07-28 14:15:00', 2, 1),
+(3, '2023-07-29 18:00:00', 3, 2),
+(4, '2023-07-30 20:45:00', 4, 2),
+(5, '2023-08-01 11:00:00', 5, 3),
+(4, '2023-08-02 09:30:00', 1, 3),
+(2, '2023-08-03 17:45:00', 2, 1),
+(3, '2023-08-04 16:20:00', 3, 1),
+(5, '2023-08-05 13:10:00', 4, 2),
+(4, '2023-08-06 15:50:00', 5, 2),
+(4, '2023-08-07 10:30:00', 1, 3),
+(5, '2023-08-08 12:15:00', 2, 3),
+(3, '2023-08-09 14:00:00', 3, 1),
+(4, '2023-08-10 16:40:00', 4, 1),
+(4, '2023-08-11 19:00:00', 5, 2),
+(5, '2023-08-12 21:25:00', 1, 2),
+(3, '2023-08-13 08:00:00', 2, 3),
+(4, '2023-08-14 10:20:00', 3, 3),
+(5, '2023-08-15 14:30:00', 4, 1),
+(4, '2023-08-16 16:50:00', 5, 1);
+# Bài tập SQL yêu cầu
+# - Tìm 5 người đã like nhà hàng nhiều nhất.
+SELECT user_id, COUNT(DISTINCT res_id) AS total_liked_restaurants
+FROM like_res
+GROUP BY user_id
+ORDER BY total_liked_restaurants DESC
+LIMIT 5;
+# - Tìm 2 nhà hàng có lượt like nhiều nhất.
+SELECT res_id, COUNT(user_id) AS total_likes
+FROM like_res
+GROUP BY res_id
+ORDER BY total_likes DESC
+LIMIT 2;
+# - Tìm người đã đặt hàng nhiều nhất.
+SELECT user_id, COUNT(*) AS total_orders
+FROM orders
+GROUP BY user_id
+ORDER BY total_orders DESC
+LIMIT 1;
+# - Tìm người dùng không hoạt động trong hệ thống 
+SELECT nguoi_dung.user_id, nguoi_dung.full_name
+FROM nguoi_dung
+LEFT JOIN orders ON nguoi_dung.user_id = orders.user_id
+LEFT JOIN like_res ON nguoi_dung.user_id = like_res.user_id
+WHERE orders.order_id IS NULL AND like_res.res_id IS NULL;
+# - Tính trung bình sub_food của một food.
+SELECT food_id, AVG(sub_count) AS average_sub_food
+FROM (
+    SELECT food_id, COUNT(*) AS sub_count
+    FROM sub_food
+    GROUP BY food_id
+) AS sub_counts
+GROUP BY food_id;
